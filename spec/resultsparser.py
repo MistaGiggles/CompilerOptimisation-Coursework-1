@@ -77,9 +77,9 @@ for program in results:
 		
 		if results[program][opt]["run"]["avg"] < best[program][1]:
 			if not opt in baseline:
-				best[program] = (opt, results[program][opt]["run"]["avg"], results[program][opt]["compile"]["avg"])
+				best[program] = (opt, results[program][opt]["run"]["avg"], results[program][opt]["compile"]["avg"], results[program][opt]["run"]["variance"])
 		if len(opt) < 5:
-			plot.write("{0}\t{1}\t{2}\n".format( results[program][opt]["run"]["avg"], results[program][opt]["compile"]["avg"], '\"' + opt + '\"'))
+			plot.write("{0}\t{1}\t{2}\t{3}\n".format( results[program][opt]["run"]["avg"], results[program][opt]["compile"]["avg"],results[program][opt]["run"]["variance"], '\"' + opt + '\"'))
 		outfile.write("\"" + opt + "\"")
 		for run in results[program][opt]["run"]:
 			if int(float(results[program][opt]["run"][run])) < 50:
@@ -94,10 +94,10 @@ for program in results:
 
 			outfile.write(" " + str(int(float(results[program][opt]["run"][run]))))
 		outfile.write("\n")
-	plot.write("{0}\t{1}\t{2}\n".format(best[program][1], best[program][2], "\"Best for Program\""))#'\"' + best[program][0] + '\"'))
+	plot.write("{0}\t{1}\t{2}\t{3}\n".format(best[program][1], best[program][2],best[program][3], "\"Best for Program\""))#'\"' + best[program][0] + '\"'))
 	plotinfo.write("Best options for program: \t {0} \n".format(best[program][0]))
 	if len(results[program].keys()) == 204:
-		plot.write("{0}\t{1}\t{2}\n".format(results[program][bestoverall]["run"]["avg"], results[program][bestoverall]["compile"]["avg"], " \"Best across all\""))
+		plot.write("{0}\t{1}\t{2}\t{3}\n".format(results[program][bestoverall]["run"]["avg"], results[program][bestoverall]["compile"]["avg"],results[program][bestoverall]["run"]["variance"], " \"Best across all\""))
 		plotinfo.write("Best overall options: \t\t {0} \n".format(bestoverall))
 	plot.close()
 	plotinfo.close()
