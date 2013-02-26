@@ -1,0 +1,6 @@
+set terminal png
+set output '$2'
+set style data histogram
+set style histogram cluster gap 1
+set style fill solid border rgb "black"
+plot '$1' using 1:xtic(3) title 'Run time', '' using 2:xtic(3) title 'Compile Time'

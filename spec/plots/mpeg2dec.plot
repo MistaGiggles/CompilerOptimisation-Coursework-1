@@ -1,0 +1,6 @@
+204	40	"-O3"
+204	39	"-O2"
+203	40	"-O1"
+203	41	"-O0"
+201	33	"Best for Program"
+204	40	 "Best across all"

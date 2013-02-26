@@ -1,0 +1,6 @@
+64	46	"-O3"
+64	46	"-O2"
+65	45	"-O1"
+66	44	"-O0"
+63	45	"Best for Program"
+66	46	 "Best across all"
