@@ -108,7 +108,7 @@ outfile.close()
 
 result = set(bestoverall.split(" "))
 for p in best:
-	result.intersection_update(best[p][0])
+	result.intersection_update(set(shlex.split(best[p][0])))
 print result
 for r in results:
 	print "Approx {0} benchmarks run for {1}".format(10*len(results[r].keys()), r)
