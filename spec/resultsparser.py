@@ -44,9 +44,14 @@ for program in results:
 		for run in results[program][opt]["run"]:
 			runtimes.append(int(float(results[program][opt]["run"][run])))
 		#print "RUN\t {0} {1} : {2}".format(program, opt, sum(runtimes)/len(runtimes))
-		results[program][opt]["run"]["variance"] = max(runtimes) - min(runtimes)
-		results[program][opt]["run"]["avg"] = sum(runtimes)/len(runtimes)
-
+		avg = sum(runtimes)/len(runtimes)
+		variance = 0
+		varlist = []
+		for v in runtimes:
+			varlist.append(pow(v,2)-pow(avg,2))
+		variance = sum(varlist)/len(varlist) 
+		results[program][opt]["run"]["variance"] = variance / 2
+		results[program][opt]["run"]["avg"] = avg
 
 baseline = ['-O3', '-O0', '-O1', '-O2', '-O3']
 
@@ -65,6 +70,7 @@ bestoverall = min(overall, key=overall.get)
 outfile = open("raw_runtimes", 'w')
 failures = {}
 best = {}
+averages = {}
 
 for program in results:
 	outfile.write(program + "\n")
@@ -73,6 +79,10 @@ for program in results:
 	failures[program] = {}
 	best[program] = ("DEFAULT", 10000000000, 0)
 	failures[program]["RAW"] = []
+	
+	allavg = []
+	allavgcomp = []
+	
 	for opt in results[program]:
 		
 		if results[program][opt]["run"]["avg"] < best[program][1]:
@@ -81,6 +91,8 @@ for program in results:
 		if len(opt) < 5:
 			plot.write("{0}\t{1}\t{2}\t{3}\n".format( results[program][opt]["run"]["avg"], results[program][opt]["compile"]["avg"],results[program][opt]["run"]["variance"], '\"' + opt + '\"'))
 		outfile.write("\"" + opt + "\"")
+		allavg.append(int(float(results[program][opt]["run"]["avg"])))
+		allavgcomp.append(int(float(results[program][opt]["compile"]["avg"])))
 		for run in results[program][opt]["run"]:
 			if int(float(results[program][opt]["run"][run])) < 50:
 				failopts = opt.split(" ")
@@ -91,9 +103,12 @@ for program in results:
 					else:
 						failures[program][fo] = 0
 			#rt.append(int(results[program][opt]["run"][run]))
-
-			outfile.write(" " + str(int(float(results[program][opt]["run"][run]))))
+			if run!="run" and run!="avg" and run!="variance":
+				outfile.write(" " + str(int(float(results[program][opt]["run"][run]))))
 		outfile.write("\n")
+	avg2 = sum(allavg)/len(allavg)
+	averages[program] = (avg2, 0*sum([pow(y,2)-pow(avg2,2) for y in allavg])/2, sum(allavgcomp)/len(allavgcomp))
+	plot.write("{0}\t{1}\t{2}\t{3}\n".format(averages[program][0], averages[program][2], averages[program][1], " \"Average\""))
 	plot.write("{0}\t{1}\t{2}\t{3}\n".format(best[program][1], best[program][2],best[program][3], "\"Best for Program\""))#'\"' + best[program][0] + '\"'))
 	plotinfo.write("Best options for program: \t {0} \n".format(best[program][0]))
 	if len(results[program].keys()) == 204:
@@ -106,6 +121,7 @@ outfile.close()
 
 
 
+
 result = set(bestoverall.split(" "))
 for p in best:
 	result.intersection_update(set(shlex.split(best[p][0])))
@@ -113,3 +129,5 @@ print result
 for r in results:
 	print "Approx {0} benchmarks run for {1}".format(10*len(results[r].keys()), r)
 
+
+ 
